@@ -30,15 +30,18 @@ function paint(s,frame){
 function paintBlend(s,exact){
   if(!s.image)return;
   const last=s.manifest.frameCount-1,a=Math.max(0,Math.min(last,Math.floor(exact))),b=Math.min(last,a+1),t=exact-a;
-  if(t<.02||a===b){paint(s,a);return;}if(t>.98){paint(s,b);return;}
-  const cw=s.canvas.width,ch=s.canvas.height;
-  s.ctx.clearRect(0,0,cw,ch);
-  s.ctx.globalAlpha=1;s.ctx.drawImage(s.frames[a],0,0,cw,ch);
-  s.ctx.globalAlpha=t;s.ctx.drawImage(s.frames[b],0,0,cw,ch);
-  s.ctx.globalAlpha=1;s.button.dataset.frame=String(Math.round(exact));
+  if(exact<.02){paint(s,0);return;}if(exact>last-.02){paint(s,last);return;}
+  const cw=s.canvas.width,ch=s.canvas.height,ctx=s.ctx;
+  ctx.clearRect(0,0,cw,ch);
+  ctx.globalAlpha=1;ctx.drawImage(s.frames[a],0,0,cw,ch);
+  if(t>.02&&a!==b){ctx.globalAlpha=t;ctx.drawImage(s.frames[b],0,0,cw,ch);}
+  /* Fade the full-resolution still out over the first/last frame and a half, so leaving or
+     reaching a rest pose never pops between the sharp still and the motion frames. */
+  const w0=Math.max(0,1-exact/1.5),w1=Math.max(0,1-(last-exact)/1.5);
+  if(w0>0&&s.profileStill){ctx.globalAlpha=w0;ctx.drawImage(s.profileStill,0,0,cw,ch);}
+  if(w1>0&&s.frontStill){ctx.globalAlpha=w1;ctx.drawImage(s.frontStill,0,0,cw,ch);}
+  ctx.globalAlpha=1;s.button.dataset.frame=String(Math.round(exact));
 }
-/* Canvas resolution follows the displayed size (max 2x DPR, never above the stills) so phones
-   repaint far fewer pixels per frame while desktops still get the full-resolution stills. */
 function sizeCanvas(s){
   const m=s.manifest,maxW=m.stillWidth||m.width,ratio=(m.stillHeight||m.height)/maxW;
   const w=Math.max(m.width,Math.min(maxW,Math.round(s.displayWidth*Math.min(devicePixelRatio||1,2))));
@@ -59,6 +62,9 @@ function resident(img){
   const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
   c.getContext('2d').drawImage(img,0,0);return c;
 }
+/* Move garments with a composited transform instead of `left`: no layout per frame and no
+   whole-pixel snapping, which made the garments shiver while the rail was swiped on phones. */
+function place(s){s.button.style.transform=`translate3d(${s.position.toFixed(2)}px,0,0) translateX(-50%)`;}
 function activate(index){
   if(!ready)return;
   active=index;
@@ -90,7 +96,7 @@ function tick(time){
   const positions=targets();
   states.forEach((s,i)=>{
     const next=reduced.matches?{position:positions[i],velocity:0}:slideStep(s.position,s.velocity,positions[i],dt,active<0?30:28);
-    s.position=next.position;s.velocity=next.velocity;s.button.style.left=s.position+'px';
+    s.position=next.position;s.velocity=next.velocity;place(s);
     moving ||=Math.abs(s.position-positions[i])>.03||Math.abs(s.velocity)>.2;
   });
   if(moving)raf=requestAnimationFrame(tick);else{raf=0;lastTime=0;}
@@ -103,7 +109,7 @@ function layout(){
   states.forEach(s=>{s.displayWidth=displayWidth;s.button.style.setProperty('--garment-width',displayWidth+'px');sizeCanvas(s);});
   $('#interaction-hint').textContent=mobile.matches?'Glissez pour parcourir · Touchez pour voir':'Survolez pour tourner la pièce · Cliquez pour voir';
   cancelIntent();drag=null;railOffset=0;railVelocity=0;
-  const positions=targets();states.forEach((s,i)=>{s.position=positions[i];s.velocity=0;s.button.style.left=s.position+'px';});
+  const positions=targets();states.forEach((s,i)=>{s.position=positions[i];s.velocity=0;place(s);});
   activate(mobile.matches?selected:-1);wake();
 }
 function hitAt(x){
