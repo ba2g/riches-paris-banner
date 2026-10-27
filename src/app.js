@@ -23,7 +23,7 @@ function paint(s,frame){
   s.ctx.clearRect(0,0,cw,ch);s.ctx.globalAlpha=1;
   /* At rest, show the full-resolution stills; the atlas only carries the motion in between. */
   const still=frame===0?s.profileStill:frame===last?s.frontStill:null;
-  if(still)s.ctx.drawImage(still,0,0,cw,ch);else s.ctx.drawImage(s.image,...cell(s,frame),0,0,cw,ch);
+  if(still)s.ctx.drawImage(still,0,0,cw,ch);else s.ctx.drawImage(s.frames[frame],0,0,cw,ch);
   s.button.dataset.frame=String(frame);
 }
 /* Cross-fade the two nearest frames so the turn reads as continuous motion, not steps. */
@@ -33,9 +33,31 @@ function paintBlend(s,exact){
   if(t<.02||a===b){paint(s,a);return;}if(t>.98){paint(s,b);return;}
   const cw=s.canvas.width,ch=s.canvas.height;
   s.ctx.clearRect(0,0,cw,ch);
-  s.ctx.globalAlpha=1;s.ctx.drawImage(s.image,...cell(s,a),0,0,cw,ch);
-  s.ctx.globalAlpha=t;s.ctx.drawImage(s.image,...cell(s,b),0,0,cw,ch);
+  s.ctx.globalAlpha=1;s.ctx.drawImage(s.frames[a],0,0,cw,ch);
+  s.ctx.globalAlpha=t;s.ctx.drawImage(s.frames[b],0,0,cw,ch);
   s.ctx.globalAlpha=1;s.button.dataset.frame=String(Math.round(exact));
+}
+/* Canvas resolution follows the displayed size (max 2x DPR, never above the stills) so phones
+   repaint far fewer pixels per frame while desktops still get the full-resolution stills. */
+function sizeCanvas(s){
+  const m=s.manifest,maxW=m.stillWidth||m.width,ratio=(m.stillHeight||m.height)/maxW;
+  const w=Math.max(m.width,Math.min(maxW,Math.round(s.displayWidth*Math.min(devicePixelRatio||1,2))));
+  if(s.canvas.width===w)return;
+  s.canvas.width=w;s.canvas.height=Math.round(w*ratio);
+  s.ctx.imageSmoothingEnabled=true;s.ctx.imageSmoothingQuality=mobile.matches?'medium':'high';
+  if(s.image)paintBlend(s,s.controller.position*(m.frameCount-1));
+}
+/* One small canvas per frame (same memory as the atlas): each draw touches only that frame,
+   never a re-decode or a copy of the whole atlas. */
+function sliceFrames(img,m){
+  const out=[];
+  for(let i=0;i<m.frameCount;i++){const c=document.createElement('canvas');c.width=m.width;c.height=m.height;
+    c.getContext('2d').drawImage(img,(i%m.columns)*m.width,Math.floor(i/m.columns)*m.height,m.width,m.height,0,0,m.width,m.height);out.push(c);}
+  return out;
+}
+function resident(img){
+  const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
+  c.getContext('2d').drawImage(img,0,0);return c;
 }
 function activate(index){
   if(!ready)return;
@@ -53,7 +75,7 @@ function intend(index){
 }
 function targets(){
   const width=holder.clientWidth,garmentWidth=states[0]?.displayWidth||370;
-  if(mobile.matches)return mobileRailPositions({width,items:states.map(s=>({half:s.displayWidth*(.08+.35*s.controller.position)})),focus:selected,offset:railOffset,gap:12});
+  if(mobile.matches)return mobileRailPositions({width,items:states.map(s=>({half:s.displayWidth*(.08+.35*s.controller.position)})),focus:selected,offset:railOffset,gap:banner?48:12});
   return rackPositions({count:states.length,width,garmentWidth,active,minimumSpread:35});
 }
 function tick(time){
@@ -77,8 +99,8 @@ function wake(){if(!raf&&!document.hidden)raf=requestAnimationFrame(tick);}
 function stop(){cancelAnimationFrame(raf);raf=0;lastTime=0;}
 function layout(){
   if(!states.length)return;
-  const displayWidth=mobile.matches?(banner?340:315):banner?(innerWidth>=1600?470:innerWidth>=1200?430:380):innerWidth>=1400?400:370;
-  states.forEach(s=>{s.displayWidth=displayWidth;s.button.style.setProperty('--garment-width',displayWidth+'px');});
+  const displayWidth=mobile.matches?(banner?Math.min(260,Math.round(innerWidth*.66)):315):banner?(innerWidth>=1600?470:innerWidth>=1200?430:380):innerWidth>=1400?400:370;
+  states.forEach(s=>{s.displayWidth=displayWidth;s.button.style.setProperty('--garment-width',displayWidth+'px');sizeCanvas(s);});
   $('#interaction-hint').textContent=mobile.matches?'Glissez pour parcourir · Touchez pour voir':'Survolez pour tourner la pièce · Cliquez pour voir';
   cancelIntent();drag=null;railOffset=0;railVelocity=0;
   const positions=targets();states.forEach((s,i)=>{s.position=positions[i];s.velocity=0;s.button.style.left=s.position+'px';});
@@ -182,9 +204,12 @@ async function boot(){
       const image=new Image();image.src=assetUrl(catalog.items[i],s.manifest.atlas).href;await image.decode();
       const {width,height,columns,frameCount}=s.manifest;
       if(image.naturalWidth!==width*columns||image.naturalHeight!==height*Math.ceil(frameCount/columns))throw new Error('Atlas dimensions do not match manifest: '+catalog.items[i].id);
-      const still=async name=>{const im=new Image();im.src=assetUrl(catalog.items[i],s.manifest[name]).href;try{await im.decode();return im;}catch{return null;}};
+      const still=async name=>{const im=new Image();im.src=assetUrl(catalog.items[i],s.manifest[name]).href;try{await im.decode();return resident(im);}catch{return null;}};
       [s.profileStill,s.frontStill]=await Promise.all([still('profile'),still('front')]);
-      s.image=image;paint(s,0);s.button.classList.add('ready');$('#load-counter').textContent=`${++loaded} / ${states.length}`;
+      s.image=image;s.frames=sliceFrames(image,s.manifest);
+      /* Atlas and stills are copied into canvases once: a large <img> can be evicted from the decode
+         cache and re-decoded on the next draw, which showed up as a ~0.4 s hitch when a turn started. */
+      paint(s,0);s.button.classList.add('ready');$('#load-counter').textContent=`${++loaded} / ${states.length}`;
     }));
     ready=true;states.forEach(s=>s.button.disabled=false);rack.setAttribute('aria-busy','false');$('#load-state').hidden=true;$('#inspect').disabled=false;updateInfo(selected);layout();
     document.documentElement.dataset.ready='true';

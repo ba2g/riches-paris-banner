@@ -71,7 +71,7 @@ html.banner .rack-items{left:calc(var(--x) + 40px);right:calc(var(--x) + 40px)}
 @media(max-width:700px){html.banner .rack-items{left:0;right:0}}
 @media(min-width:1600px){html.banner .rack{height:700px}}
 @media(max-width:1199px){html.banner .rack{height:580px}}
-@media(max-width:700px){html.banner .rack{height:520px;margin:0}}
+@media(max-width:700px){html.banner .rack{height:400px;margin:0}}
 /* Banner: compact product card so it fits the banner height; the buy link stays in view */
 html.banner dialog{max-height:calc(100% - 24px);width:calc(100% - 48px)}
 html.banner .dialog-header{padding:12px 22px}
@@ -85,3 +85,11 @@ html.banner #product-preview,html.banner .detail-note{display:none}
 html.banner .product-copy dl>div:has(#product-preview){display:none}
 html.banner .buy-link{margin-top:14px}
 @media(max-width:700px){html.banner .product-layout{grid-template-columns:1fr;gap:14px}html.banner .detail-stage img{max-height:240px}}
+/* Phones: a CSS drop-shadow filter on a canvas is re-rasterised on every animation frame and
+   makes the turn stutter. Use a static soft shadow under the garment instead. */
+@media(max-width:700px),(hover:none){
+ .garment canvas,.garment img{filter:none!important}
+ .garment::after{content:'';position:absolute;left:18%;right:18%;top:calc(24px + var(--garment-width,280px)*1.1);height:20px;pointer-events:none;z-index:-1;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(40,32,24,.16),rgba(40,32,24,0) 70%)}
+ .garment canvas{will-change:contents}
+}
