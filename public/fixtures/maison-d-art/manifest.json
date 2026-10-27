@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "atlas": "atlas.webp",
+  "profile": "profile.webp",
+  "front": "front.webp",
+  "width": 384,
+  "height": 448,
+  "columns": 6,
+  "frameCount": 30,
+  "pivot": [
+    0.5,
+    0.027
+  ],
+  "source": {
+    "kind": "still-views-transition",
+    "views": [
+      "profile",
+      "front",
+      "back"
+    ],
+    "note": "Built from the brand's own profile/front/back product renders; transition is a matched-scale cross-dissolve, not filmed rotation",
+    "sha256": "9ce7b0f84fc6a17e04d6f7e1a561f978a1d7f1d37d7a7c1d2839679fbc7468ad"
+  },
+  "processing": {
+    "key": "white-floodfill",
+    "scale": 0.34318398474737843
+  },
+  "bytes": 571922
+}

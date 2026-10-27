@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Riches Paris — la nouvelle collection en vitrine interactive. Coton tricot épais, coupe ample. From Paris for World.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Nouveautés · Riches Paris</title>
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#showcase">Aller aux pièces</a>
+  <div class="announce">Livraison offerte en France dès 90 €</div>
+  <header class="site-header">
+    <a class="wordmark" href="#showcase" id="site-title">RICHES PARIS<span aria-hidden="true">↗</span></a>
+    <span class="edition">From Paris for World</span>
+    <button class="text-button" id="about-open">La maison <span aria-hidden="true">↗</span></button>
+  </header>
+  <main id="showcase">
+    <div class="intro">
+      <p class="eyebrow">Nouveautés · Collection 2026</p>
+      <h1>La mode nous appartient.</h1>
+      <p class="intro-note" id="interaction-hint">Survolez pour tourner la pièce · Cliquez pour voir</p>
+    </div>
+    <div class="rack" id="rack" aria-label="Collection interactive" aria-busy="true">
+      <div class="rail" aria-hidden="true"></div>
+      <div class="frame" aria-hidden="true"><span class="corner l"></span><span class="corner r"></span><span class="post l"></span><span class="post r"></span><span class="foot l"></span><span class="foot r"></span></div>
+      <div class="rack-items" id="rack-items"></div>
+      <div class="load-state" id="load-state" role="status"><span id="load-text">Chargement des pièces</span><span id="load-counter">0 / 5</span></div>
+    </div>
+    <div class="collection-bar">
+      <div class="selected-info" aria-live="polite"><span id="selected-index">01 / 05</span><h2 id="selected-name"></h2><p id="selected-type"></p><p class="selected-price" id="selected-price"></p></div>
+      <div class="browse-controls"><button id="previous" class="arrow-button" disabled aria-label="Pièce précédente">←</button><button id="next" class="arrow-button" disabled aria-label="Pièce suivante">→</button><button id="inspect" class="inspect-button" disabled>Voir la pièce <span aria-hidden="true">↗</span></button></div>
+    </div>
+    <p class="fixture-note">Coupe ample · Coton tricot épais · Qualité premium 280 g</p>
+  </main>
+  <footer class="site-footer"><span>© 2026 Riches Paris</span><span>Paris · France</span><span>From Paris for World</span></footer>
+  <dialog id="product-dialog" aria-labelledby="product-title">
+    <div class="dialog-header"><span class="eyebrow">Fiche produit</span><button class="close-button" data-close="product-dialog" aria-label="Fermer la fiche produit">Fermer ×</button></div>
+    <div class="product-layout"><div class="detail-stage"><img id="detail-image" alt="" width="384" height="448"></div><div class="product-copy"><p class="eyebrow" id="product-type"></p><h2 id="product-title"></h2><p id="product-description"></p><dl><div><dt>Prix</dt><dd id="product-price"></dd></div><div><dt>Couleur</dt><dd id="product-color"></dd></div><div><dt>Tailles</dt><dd id="product-sizes"></dd></div><div><dt>Aperçu</dt><dd id="product-preview"></dd></div></dl><div class="view-tabs" role="group" aria-label="Côté du produit"><button id="view-front" aria-pressed="true">Face</button><button id="view-back" aria-pressed="false">Dos</button></div><a id="product-link" class="buy-link" hidden target="_blank" rel="noopener">Acheter sur richesparis.com ↗</a><p class="detail-note">La pièce tourne au survol. Cette fiche montre des images fixes de face et de dos.</p></div></div>
+  </dialog>
+  <dialog id="about-dialog" aria-labelledby="about-title"><div class="dialog-header"><span class="eyebrow">La maison</span><button class="close-button" data-close="about-dialog" aria-label="Fermer">Fermer ×</button></div><div class="about-copy"><h2 id="about-title">From Paris<br>for World.</h2><p>Riches Paris dessine des pièces à porter large : t-shirts en coton tricot épais de 280 g, sweats, ensembles et maille, en séries courtes.</p><p>Chaque pièce est suspendue sur le rail. Survolez-la pour la voir pivoter de profil à face, quittez-la pour qu'elle revienne. Sur mobile, glissez le rail et touchez une pièce pour ouvrir sa fiche.</p><p>Le mannequin mesure 1m90 et porte une taille L.</p></div></dialog>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+ "title": "RICHES PARIS",
+ "subtitle": "Nouveautés",
+ "timing": {
+  "intentMs": 40,
+  "turnMs": 300,
+  "returnMs": 240,
+  "endpointWindow": 0.25
+ },
+ "items": [
+  {
+   "id": "rc-mains",
+   "name": "RC MAINS",
+   "type": "T-shirt oversize",
+   "color": "Blanc",
+   "description": "T-shirt coupe ample en coton épais. Grand « RC » noir en relief au dos, mains rouges imprimées qui débordent sur les côtés, badge Riches Paris sur la poitrine.",
+   "motion": "fixtures/rc-mains/manifest.json",
+   "back": "fixtures/rc-mains/back.webp"
+  },
+  {
+   "id": "la-vie-en-riches",
+   "name": "LA VIE EN RICHES",
+   "type": "Sweat à capuche",
+   "color": "Blanc",
+   "description": "Hoodie oversize en molleton épais. Lettrage « Riches · Maison Certifiée » en relief devant, croix gothiques et « La vie en Riches » au dos.",
+   "price": "229,90 €",
+   "sizes": ["S", "M", "L", "XL", "XXL"],
+   "motion": "fixtures/la-vie-en-riches/manifest.json",
+   "back": "fixtures/la-vie-en-riches/back.webp",
+   "productUrl": "https://richesparis.com/products/sweats-riches-paris-la-vie-en-riches"
+  },
+  {
+   "id": "private-club",
+   "name": "PRIVATE CLUB",
+   "type": "Zip à capuche",
+   "color": "Noir",
+   "description": "Hoodie zippé coupe ample. Brodé « Private Club » et croix devant, grand « Riches Paris » et croix argentée au dos, monogramme RC sur les manches.",
+   "motion": "fixtures/private-club/manifest.json",
+   "back": "fixtures/private-club/back.webp"
+  },
+  {
+   "id": "maison-d-art",
+   "name": "MAISON D'ART",
+   "type": "T-shirt oversize",
+   "color": "Noir",
+   "description": "T-shirt coupe ample en coton épais. Graffiti « RICHES » rose en relief qui fait le tour du t-shirt, signature « maison d'art » sur la poitrine.",
+   "motion": "fixtures/maison-d-art/manifest.json",
+   "back": "fixtures/maison-d-art/back.webp"
+  },
+  {
+   "id": "riches-du-monde",
+   "name": "RICHES DU MONDE",
+   "type": "Sweat col rond",
+   "color": "Bleu ciel",
+   "description": "Sweat oversize effet destroy en bas. Grande croix et « Riches Paris » en relief devant, « riches du monde » sur les deux manches.",
+   "motion": "fixtures/riches-du-monde/manifest.json",
+   "back": "fixtures/riches-du-monde/back.webp"
+  }
+ ]
+}

@@ -1,0 +1,74 @@
+/* Riches Paris brand layer: black on white, bold uppercase, tight and confident. Loaded after style.css. */
+:root{--paper:#ffffff;--ink:#000000;--muted:#6b6b6b;--line:#e4e4e4;--tracking:0}
+:focus-visible{outline-color:#000}
+.announce{background:#000;color:#fff;text-align:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;padding:9px 16px}
+.wordmark{font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.edition,.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:600}
+.text-button{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:600}
+.intro h1{font-size:40px;font-weight:600;text-transform:uppercase;letter-spacing:-.01em;line-height:1.05}
+.intro-note{text-transform:uppercase;letter-spacing:.1em;font-size:11px}
+.rail{background:linear-gradient(#3a3a3a,#000 45%,#262626 70%,#000);border-top:1px solid #555;border-bottom:1px solid #000}
+.selected-info h2{font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.selected-info p,.selected-info>span{text-transform:uppercase;letter-spacing:.1em;font-size:11px}
+.arrow-button{border-color:#000;border-radius:0}
+.inspect-button{background:#000;text-transform:uppercase;letter-spacing:.12em;font-weight:600;font-size:12px}
+.fixture-note{text-transform:uppercase;letter-spacing:.12em;font-size:11px}
+.site-footer{background:#000;color:#fff;border-top:0;text-transform:uppercase;letter-spacing:.14em;font-size:10px}
+.site-footer span{color:#fff}
+.product-copy h2{font-weight:600;text-transform:uppercase;letter-spacing:.02em}
+.product-copy dl dt{text-transform:uppercase;letter-spacing:.1em;font-size:11px;color:var(--muted)}
+.product-copy dl dd{font-weight:600}
+.product-copy dl>div[hidden]{display:none}
+.view-tabs button{text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.buy-link{display:block;margin-top:22px;background:#000;color:#fff;text-align:center;text-decoration:none;text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:600;padding:15px 20px}
+.buy-link[hidden]{display:none}
+.close-button{text-transform:uppercase;letter-spacing:.1em;font-size:11px;font-weight:600}
+.about-copy h2{font-weight:600;text-transform:uppercase}
+@media(max-width:700px){.announce{font-size:10px}.wordmark{font-size:18px}.intro h1{font-size:28px}}
+
+.selected-price{font-size:13px!important;font-weight:600;color:var(--ink)!important;margin-top:4px!important}
+.selected-price:empty{display:none}
+
+/* ---------- Soft light backdrop ---------- */
+:root{--iron:#151515}
+.rack{height:560px;background:linear-gradient(180deg,#f4f5f4 0%,#eeeeec 70%,#e7e5e1 100%);isolation:isolate}
+.rack::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,0) 35%,rgba(255,255,255,0) 70%,rgba(246,242,235,.55) 100%)}
+/* freestanding stainless-steel clothes rail: 3D-rendered tube parts (rail tiles horizontally, posts vertically) */
+.rack{--x:40px;--y:20px;--t:16px;--r:26px}
+.rail{top:var(--y)!important;left:calc(var(--x) + var(--r))!important;right:calc(var(--x) + var(--r))!important;height:var(--t)!important;border:0!important;border-radius:0;z-index:1;
+ background:url("../public/fixtures/rack/rail.webp") repeat-x 0 0/auto 100%!important;box-shadow:none!important;filter:drop-shadow(0 5px 4px rgba(0,0,0,.14))}
+.rail::before,.rail::after{content:none!important}
+.frame{position:absolute;inset:0;pointer-events:none;z-index:1}
+.frame span{position:absolute;display:block;background-repeat:no-repeat}
+.frame .corner{top:var(--y);width:var(--r);height:var(--r);background-size:100% 100%;filter:drop-shadow(0 5px 4px rgba(0,0,0,.12))}
+.frame .corner.l{left:var(--x);background-image:url("../public/fixtures/rack/corner-l.webp")}
+.frame .corner.r{right:var(--x);background-image:url("../public/fixtures/rack/corner-r.webp")}
+.frame .post{top:calc(var(--y) + var(--r));bottom:30px;width:var(--t);background-repeat:repeat-y;background-size:100% auto;filter:drop-shadow(3px 0 4px rgba(0,0,0,.10))}
+.frame .post.l{left:var(--x);background-image:url("../public/fixtures/rack/post-l.webp")}
+.frame .post.r{right:var(--x);background-image:url("../public/fixtures/rack/post-r.webp")}
+.frame .foot{bottom:10px;width:100px;height:22px;background:url("../public/fixtures/rack/foot.webp") 0 0/100% 100% no-repeat}
+.frame .foot::after{content:'';position:absolute;left:-6px;right:-6px;bottom:-8px;height:12px;background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.22),rgba(0,0,0,0) 70%)}
+.frame .foot.l{left:calc(var(--x) + var(--t)/2 - 50px)}.frame .foot.r{right:calc(var(--x) + var(--t)/2 - 50px)}
+.rack-items{z-index:2}
+/* stainless hook: curls over the tube, stem drops to the hanger */
+.garment .wire{top:-19px!important;left:calc(50% - 13px)!important;width:26px!important;height:58px!important;z-index:3;
+ background:url("../public/fixtures/rack/hook.webp") 0 0/100% 100% no-repeat!important;filter:drop-shadow(0 2px 1.5px rgba(0,0,0,.2))}
+.garment canvas,.garment img{filter:drop-shadow(0 16px 20px rgba(60,50,40,.16)) drop-shadow(0 2px 3px rgba(0,0,0,.10))}
+.load-state{background:rgba(255,255,255,.85)}
+@media(min-width:1400px){.rack{height:600px;--rack-h:600px}}
+@media(max-width:700px){.rack{height:500px;--rack-h:500px}.rail{left:0!important;right:0!important}.frame{display:none}}
+/* Banner mode: replaces the hero slider on richesparis.com via ?banner.
+   Transparent page: the shop's own background shows through; only the rack and garments are drawn. */
+html.banner .announce,html.banner .site-header,html.banner .site-footer,html.banner .fixture-note,html.banner .skip,html.banner .intro,html.banner .collection-bar{display:none}
+html.banner,html.banner body{background:transparent!important}
+html.banner body{overflow:hidden}
+html.banner main{max-width:none;margin:0;padding:0}
+html.banner .rack{margin:0;height:640px;background:none!important}
+html.banner .rack::after{display:none}
+html.banner .load-state{background:transparent}
+html.banner .rack{--x:clamp(16px,2.5vw,48px)}
+html.banner .rack-items{left:calc(var(--x) + 40px);right:calc(var(--x) + 40px)}
+@media(max-width:700px){html.banner .rack-items{left:0;right:0}}
+@media(min-width:1600px){html.banner .rack{height:700px}}
+@media(max-width:1199px){html.banner .rack{height:580px}}
+@media(max-width:700px){html.banner .rack{height:520px;margin:0}}
