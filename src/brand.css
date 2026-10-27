@@ -72,3 +72,16 @@ html.banner .rack-items{left:calc(var(--x) + 40px);right:calc(var(--x) + 40px)}
 @media(min-width:1600px){html.banner .rack{height:700px}}
 @media(max-width:1199px){html.banner .rack{height:580px}}
 @media(max-width:700px){html.banner .rack{height:520px;margin:0}}
+/* Banner: compact product card so it fits the banner height; the buy link stays in view */
+html.banner dialog{max-height:calc(100% - 24px);width:calc(100% - 48px)}
+html.banner .dialog-header{padding:12px 22px}
+html.banner .product-layout{padding:18px 22px;gap:28px;grid-template-columns:1fr 1fr}
+html.banner .detail-stage{min-height:0}
+html.banner .detail-stage img{max-height:min(420px,calc(100vh - 150px))}
+html.banner .product-copy h2{font-size:30px;margin:6px 0 12px}
+html.banner .product-copy dl{margin:14px 0}
+html.banner .product-copy dl>div{padding:7px 0}
+html.banner #product-preview,html.banner .detail-note{display:none}
+html.banner .product-copy dl>div:has(#product-preview){display:none}
+html.banner .buy-link{margin-top:14px}
+@media(max-width:700px){html.banner .product-layout{grid-template-columns:1fr;gap:14px}html.banner .detail-stage img{max-height:240px}}

@@ -5,6 +5,8 @@
   "front": "front.webp",
   "width": 384,
   "height": 448,
+  "stillWidth": 960,
+  "stillHeight": 1120,
   "columns": 6,
   "frameCount": 30,
   "pivot": [
@@ -25,5 +27,5 @@
     "key": "white-floodfill",
     "scale": 0.34318398474737843
   },
-  "bytes": 571922
+  "bytes": 531358
 }

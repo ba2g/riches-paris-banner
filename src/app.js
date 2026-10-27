@@ -19,8 +19,11 @@ function updateInfo(index){
 function cell(s,frame){const {width:w,height:h,columns}=s.manifest;return [(frame%columns)*w,Math.floor(frame/columns)*h,w,h];}
 function paint(s,frame){
   if(!s.image)return;
-  const {width:w,height:h}=s.manifest;
-  s.ctx.clearRect(0,0,w,h);s.ctx.globalAlpha=1;s.ctx.drawImage(s.image,...cell(s,frame),0,0,w,h);
+  const cw=s.canvas.width,ch=s.canvas.height,last=s.manifest.frameCount-1;
+  s.ctx.clearRect(0,0,cw,ch);s.ctx.globalAlpha=1;
+  /* At rest, show the full-resolution stills; the atlas only carries the motion in between. */
+  const still=frame===0?s.profileStill:frame===last?s.frontStill:null;
+  if(still)s.ctx.drawImage(still,0,0,cw,ch);else s.ctx.drawImage(s.image,...cell(s,frame),0,0,cw,ch);
   s.button.dataset.frame=String(frame);
 }
 /* Cross-fade the two nearest frames so the turn reads as continuous motion, not steps. */
@@ -28,10 +31,10 @@ function paintBlend(s,exact){
   if(!s.image)return;
   const last=s.manifest.frameCount-1,a=Math.max(0,Math.min(last,Math.floor(exact))),b=Math.min(last,a+1),t=exact-a;
   if(t<.02||a===b){paint(s,a);return;}if(t>.98){paint(s,b);return;}
-  const {width:w,height:h}=s.manifest;
-  s.ctx.clearRect(0,0,w,h);
-  s.ctx.globalAlpha=1;s.ctx.drawImage(s.image,...cell(s,a),0,0,w,h);
-  s.ctx.globalAlpha=t;s.ctx.drawImage(s.image,...cell(s,b),0,0,w,h);
+  const cw=s.canvas.width,ch=s.canvas.height;
+  s.ctx.clearRect(0,0,cw,ch);
+  s.ctx.globalAlpha=1;s.ctx.drawImage(s.image,...cell(s,a),0,0,cw,ch);
+  s.ctx.globalAlpha=t;s.ctx.drawImage(s.image,...cell(s,b),0,0,cw,ch);
   s.ctx.globalAlpha=1;s.button.dataset.frame=String(Math.round(exact));
 }
 function activate(index){
@@ -138,13 +141,12 @@ function detailSide(back){
 }
 function openProduct(index){
   if(!ready)return;
-  if(banner&&catalog.items[index]?.productUrl){window.open(catalog.items[index].productUrl,'_top');return;}
   cancelIntent();activate(index);const item=catalog.items[index];
   $('#product-title').textContent=item.name;$('#product-type').textContent=item.type||'';$('#product-description').textContent=item.description||'';$('#product-color').textContent=item.color||'—';
   for(const [key,value] of [['price',item.price],['sizes',Array.isArray(item.sizes)?item.sizes.join(' · '):item.sizes]]){const row=$('#product-'+key);row.textContent=value||'';row.parentElement.hidden=!value;}
   $('#product-preview').textContent=item.previewLabel||(states[index].manifest.source?.kind==='original-procedural-illustration'?'Illustration originale':'Images produit préparées');
   $('#view-back').hidden=!item.back;$('#view-back').disabled=!item.back;
-  const link=$('#product-link');link.hidden=!item.productUrl;if(item.productUrl)link.href=item.productUrl;
+  const link=$('#product-link');link.hidden=!item.productUrl;if(item.productUrl){link.href=item.productUrl;link.target=banner?'_top':'_blank';}
   detailSide(false);$('#product-dialog').showModal();
 }
 $('#view-front').addEventListener('click',()=>detailSide(false));$('#view-back').addEventListener('click',()=>detailSide(true));
@@ -166,7 +168,7 @@ async function boot(){
       const button=document.createElement('button');button.className='garment';button.dataset.index=String(i);button.setAttribute('aria-label','Inspect '+item.name);button.disabled=true;
       const wire=document.createElement('span');wire.className='wire';wire.setAttribute('aria-hidden','true');
       const fallback=document.createElement('img');fallback.src=assetUrl(item,manifest.profile).href;fallback.alt='';fallback.width=manifest.width;fallback.height=manifest.height;
-      const canvas=document.createElement('canvas');canvas.width=manifest.width;canvas.height=manifest.height;canvas.setAttribute('aria-hidden','true');
+      const canvas=document.createElement('canvas');canvas.width=manifest.stillWidth||manifest.width;canvas.height=manifest.stillHeight||manifest.height;canvas.setAttribute('aria-hidden','true');
       button.append(wire,fallback,canvas);holder.append(button);
       const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
       const state={button,manifest,canvas,ctx,image:null,position:0,velocity:0,displayWidth:370};
@@ -180,6 +182,8 @@ async function boot(){
       const image=new Image();image.src=assetUrl(catalog.items[i],s.manifest.atlas).href;await image.decode();
       const {width,height,columns,frameCount}=s.manifest;
       if(image.naturalWidth!==width*columns||image.naturalHeight!==height*Math.ceil(frameCount/columns))throw new Error('Atlas dimensions do not match manifest: '+catalog.items[i].id);
+      const still=async name=>{const im=new Image();im.src=assetUrl(catalog.items[i],s.manifest[name]).href;try{await im.decode();return im;}catch{return null;}};
+      [s.profileStill,s.frontStill]=await Promise.all([still('profile'),still('front')]);
       s.image=image;paint(s,0);s.button.classList.add('ready');$('#load-counter').textContent=`${++loaded} / ${states.length}`;
     }));
     ready=true;states.forEach(s=>s.button.disabled=false);rack.setAttribute('aria-busy','false');$('#load-state').hidden=true;$('#inspect').disabled=false;updateInfo(selected);layout();

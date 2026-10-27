@@ -5,6 +5,8 @@
   "front": "front.webp",
   "width": 384,
   "height": 448,
+  "stillWidth": 960,
+  "stillHeight": 1120,
   "columns": 6,
   "frameCount": 30,
   "pivot": [

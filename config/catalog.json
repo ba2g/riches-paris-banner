@@ -10,12 +10,21 @@
  "items": [
   {
    "id": "rc-mains",
-   "name": "RC MAINS",
+   "name": "EVIL",
    "type": "T-shirt oversize",
    "color": "Blanc",
    "description": "T-shirt coupe ample en coton épais. Grand « RC » noir en relief au dos, mains rouges imprimées qui débordent sur les côtés, badge Riches Paris sur la poitrine.",
    "motion": "fixtures/rc-mains/manifest.json",
-   "back": "fixtures/rc-mains/back.webp"
+   "back": "fixtures/rc-mains/back.webp",
+   "price": "189,90 €",
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL"
+   ],
+   "productUrl": "https://richesparis.com/products/riches-paris-chaine-copie"
   },
   {
    "id": "la-vie-en-riches",
@@ -24,7 +33,13 @@
    "color": "Blanc",
    "description": "Hoodie oversize en molleton épais. Lettrage « Riches · Maison Certifiée » en relief devant, croix gothiques et « La vie en Riches » au dos.",
    "price": "229,90 €",
-   "sizes": ["S", "M", "L", "XL", "XXL"],
+   "sizes": [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
    "motion": "fixtures/la-vie-en-riches/manifest.json",
    "back": "fixtures/la-vie-en-riches/back.webp",
    "productUrl": "https://richesparis.com/products/sweats-riches-paris-la-vie-en-riches"
@@ -40,21 +55,39 @@
   },
   {
    "id": "maison-d-art",
-   "name": "MAISON D'ART",
+   "name": "TAGS",
    "type": "T-shirt oversize",
    "color": "Noir",
    "description": "T-shirt coupe ample en coton épais. Graffiti « RICHES » rose en relief qui fait le tour du t-shirt, signature « maison d'art » sur la poitrine.",
    "motion": "fixtures/maison-d-art/manifest.json",
-   "back": "fixtures/maison-d-art/back.webp"
+   "back": "fixtures/maison-d-art/back.webp",
+   "price": "189,90 €",
+   "sizes": [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "productUrl": "https://richesparis.com/products/riches-paris-tags"
   },
   {
    "id": "riches-du-monde",
-   "name": "RICHES DU MONDE",
+   "name": "RICHES FONDÉES",
    "type": "Sweat col rond",
    "color": "Bleu ciel",
    "description": "Sweat oversize effet destroy en bas. Grande croix et « Riches Paris » en relief devant, « riches du monde » sur les deux manches.",
    "motion": "fixtures/riches-du-monde/manifest.json",
-   "back": "fixtures/riches-du-monde/back.webp"
+   "back": "fixtures/riches-du-monde/back.webp",
+   "price": "189,90 €",
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL"
+   ],
+   "productUrl": "https://richesparis.com/products/riches-paris-riches-10-copie-1"
   }
  ]
 }
