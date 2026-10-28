@@ -65,13 +65,13 @@
     "meta": "fixtures/rack/hanger.json",
     "apex": [
       192.0,
-      27.6
+      12.1
     ],
     "hook": [
       192.0,
       12.1
     ],
-    "span": 158.0,
+    "span": 130,
     "garmentDrop": 9.1
   }
 }
