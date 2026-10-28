@@ -17,7 +17,7 @@ export function validateCatalog(data) {
 }
 export function validateManifest(m) {
   if (!m || !Number.isInteger(m.frameCount) || m.frameCount < 2 || m.frameCount > 120 || !Number.isInteger(m.width) || m.width < 32 || m.width > 1024 || !Number.isInteger(m.height) || m.height < 32 || m.height > 1024 || !Number.isInteger(m.columns) || m.columns < 1 || m.columns > m.frameCount) throw new Error('Invalid frame manifest dimensions.');
-  localAsset(m.atlas);localAsset(m.profile);localAsset(m.front);
+  localAsset(m.atlas);localAsset(m.profile);localAsset(m.front);if(m.turn)localAsset(m.turn);
   if (m.frameCount*m.width*m.height > 32_000_000) throw new Error('Atlas exceeds this starter\'s decode budget.');
   return m;
 }

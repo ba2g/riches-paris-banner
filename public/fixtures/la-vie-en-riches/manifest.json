@@ -20,7 +20,7 @@
       "front",
       "back"
     ],
-    "note": "Built from the brand's own profile/front/back product renders; transition is a matched-scale cross-dissolve, not filmed rotation",
+    "note": "Built from the brand's own profile/front/back product renders; transition is a matched-scale cross-dissolve, not filmed rotation Side view mirrored (text un-mirrored) so garments face the other way.",
     "sha256": "746390fe3cd05d25628b4d2d52ebbf8376420b75173358772d425a02a18835ed"
   },
   "processing": {
@@ -65,43 +65,13 @@
     "meta": "fixtures/rack/hanger.json",
     "apex": [
       192.0,
-      67.2
+      28.4
     ],
     "hook": [
       192.0,
       12.1
     ],
     "span": 151.8,
-    "garmentDrop": 0.0,
-    "opening": [
-      [
-        156.8,
-        20.8
-      ],
-      [
-        227.2,
-        20.8
-      ],
-      [
-        237.6,
-        43.2
-      ],
-      [
-        226.4,
-        67.2
-      ],
-      [
-        192.0,
-        85.6
-      ],
-      [
-        157.6,
-        67.2
-      ],
-      [
-        146.4,
-        43.2
-      ]
-    ]
+    "garmentDrop": 0.0
   }
 }

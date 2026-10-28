@@ -20,7 +20,7 @@
       "front",
       "back"
     ],
-    "note": "Built from the brand's own profile/front/back product renders; transition is a matched-scale cross-dissolve, not filmed rotation",
+    "note": "Built from the brand's own profile/front/back product renders; transition is a matched-scale cross-dissolve, not filmed rotation Side view mirrored (text un-mirrored) so garments face the other way.",
     "sha256": "94184c43cc9200eda66c72a41d5f4e4b4bd6b8f51f7dd48a037b60d5dd57ea74"
   },
   "processing": {
@@ -71,121 +71,8 @@
       192.0,
       12.1
     ],
-    "span": 176.0,
-    "garmentDrop": 4.8,
-    "opening": [
-      [
-        236.8,
-        28.8
-      ],
-      [
-        235.7,
-        31.5
-      ],
-      [
-        232.4,
-        34.0
-      ],
-      [
-        227.0,
-        36.3
-      ],
-      [
-        219.9,
-        38.2
-      ],
-      [
-        211.4,
-        39.6
-      ],
-      [
-        202.0,
-        40.5
-      ],
-      [
-        192.0,
-        40.8
-      ],
-      [
-        182.0,
-        40.5
-      ],
-      [
-        172.6,
-        39.6
-      ],
-      [
-        164.1,
-        38.2
-      ],
-      [
-        157.0,
-        36.3
-      ],
-      [
-        151.6,
-        34.0
-      ],
-      [
-        148.3,
-        31.5
-      ],
-      [
-        147.2,
-        28.8
-      ],
-      [
-        148.3,
-        26.1
-      ],
-      [
-        151.6,
-        23.6
-      ],
-      [
-        157.0,
-        21.3
-      ],
-      [
-        164.1,
-        19.4
-      ],
-      [
-        172.6,
-        18.0
-      ],
-      [
-        182.0,
-        17.1
-      ],
-      [
-        192.0,
-        16.8
-      ],
-      [
-        202.0,
-        17.1
-      ],
-      [
-        211.4,
-        18.0
-      ],
-      [
-        219.9,
-        19.4
-      ],
-      [
-        227.0,
-        21.3
-      ],
-      [
-        232.4,
-        23.6
-      ],
-      [
-        235.7,
-        26.1
-      ]
-    ]
-  }
+    "span": 175.1,
+    "garmentDrop": 9.1
+  },
+  "turn": "back.webp"
 }

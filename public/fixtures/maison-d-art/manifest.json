@@ -20,7 +20,7 @@
       "front",
       "back"
     ],
-    "note": "Built from the brand's own profile/front/back product renders; transition is a matched-scale cross-dissolve, not filmed rotation",
+    "note": "Built from the brand's own profile/front/back product renders; transition is a matched-scale cross-dissolve, not filmed rotation Side view mirrored (text un-mirrored) so garments face the other way.",
     "sha256": "9ce7b0f84fc6a17e04d6f7e1a561f978a1d7f1d37d7a7c1d2839679fbc7468ad"
   },
   "processing": {
@@ -72,120 +72,6 @@
       12.1
     ],
     "span": 173.6,
-    "garmentDrop": 10.1,
-    "opening": [
-      [
-        236.8,
-        24.8
-      ],
-      [
-        235.7,
-        27.1
-      ],
-      [
-        232.4,
-        29.3
-      ],
-      [
-        227.0,
-        31.3
-      ],
-      [
-        219.9,
-        32.9
-      ],
-      [
-        211.4,
-        34.2
-      ],
-      [
-        202.0,
-        34.9
-      ],
-      [
-        192.0,
-        35.2
-      ],
-      [
-        182.0,
-        34.9
-      ],
-      [
-        172.6,
-        34.2
-      ],
-      [
-        164.1,
-        32.9
-      ],
-      [
-        157.0,
-        31.3
-      ],
-      [
-        151.6,
-        29.3
-      ],
-      [
-        148.3,
-        27.1
-      ],
-      [
-        147.2,
-        24.8
-      ],
-      [
-        148.3,
-        22.5
-      ],
-      [
-        151.6,
-        20.3
-      ],
-      [
-        157.0,
-        18.3
-      ],
-      [
-        164.1,
-        16.7
-      ],
-      [
-        172.6,
-        15.4
-      ],
-      [
-        182.0,
-        14.7
-      ],
-      [
-        192.0,
-        14.4
-      ],
-      [
-        202.0,
-        14.7
-      ],
-      [
-        211.4,
-        15.4
-      ],
-      [
-        219.9,
-        16.7
-      ],
-      [
-        227.0,
-        18.3
-      ],
-      [
-        232.4,
-        20.3
-      ],
-      [
-        235.7,
-        22.5
-      ]
-    ]
+    "garmentDrop": 10.1
   }
 }

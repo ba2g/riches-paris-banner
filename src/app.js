@@ -25,7 +25,6 @@ function paint(s,frame){
   /* At rest, show the full-resolution stills; the atlas only carries the motion in between. */
   const still=frame===0?s.profileStill:frame===last?s.frontStill:null;
   if(still)b.drawImage(still,0,oy,cw,gh);else b.drawImage(s.frames[frame],0,oy,cw,gh);
-  drawHangerInside(b,s,frame);
   s.button.dataset.frame=String(frame);present(s);
 }
 /* Cross-fade the two nearest frames so the turn reads as continuous motion, not steps. */
@@ -42,7 +41,7 @@ function paintBlend(s,exact){
   const w0=Math.max(0,1-exact/1.5),w1=Math.max(0,1-(last-exact)/1.5);
   if(w0>0&&s.profileStill){ctx.globalAlpha=w0;ctx.drawImage(s.profileStill,0,oy,cw,gh);}
   if(w1>0&&s.frontStill){ctx.globalAlpha=w1;ctx.drawImage(s.frontStill,0,oy,cw,gh);}
-  ctx.globalAlpha=1;drawHangerInside(ctx,s,exact);
+  ctx.globalAlpha=1;
   ctx.globalAlpha=1;s.button.dataset.frame=String(Math.round(exact));present(s);
 }
 /* How far the garment hangs below the hook, in canvas pixels (lets the hanger show above the collar). */
@@ -57,15 +56,6 @@ function hangerAngle(s,exact){
 function drawHanger(ctx,s,exact){
   const h=s.manifest.hanger;if(!hanger||!h)return;
   drawHangerShape(ctx,s,exact,1);
-}
-/* Front pass: once the garment faces the camera, the hanger shows inside the collar or hood,
-   in front of the inside of the back. Clipped to that opening and faded in with the turn. */
-function drawHangerInside(ctx,s,exact){
-  const h=s.manifest.hanger;if(!hanger||!h||!Array.isArray(h.opening)||h.opening.length<3)return;
-  const w=Math.max(0,Math.min(1,(55-hangerAngle(s,exact))/35));if(w<=0)return;
-  const f=s.canvas.width/s.manifest.width,oy=dropPx(s);
-  ctx.save();ctx.beginPath();h.opening.forEach(([x,y],i)=>{i?ctx.lineTo(x*f,y*f+oy):ctx.moveTo(x*f,y*f+oy);});ctx.closePath();ctx.clip();
-  drawHangerShape(ctx,s,exact,w);ctx.restore();
 }
 function drawHangerShape(ctx,s,exact,alpha){
   const h=s.manifest.hanger;
@@ -279,7 +269,7 @@ async function boot(){
       const {width,height,columns,frameCount}=s.manifest;
       if(image.naturalWidth!==width*columns||image.naturalHeight!==height*Math.ceil(frameCount/columns))throw new Error('Atlas dimensions do not match manifest: '+catalog.items[i].id);
       const still=async name=>{const im=new Image();im.src=assetUrl(catalog.items[i],s.manifest[name]).href;try{await im.decode();return resident(im);}catch{return null;}};
-      [s.profileStill,s.frontStill]=await Promise.all([still('profile'),still('front')]);
+      [s.profileStill,s.frontStill]=await Promise.all([still('profile'),still(s.manifest.turn?'turn':'front')]);
       s.image=image;s.frames=sliceFrames(image,s.manifest);
       /* Atlas and stills are copied into canvases once: a large <img> can be evicted from the decode
          cache and re-decoded on the next draw, which showed up as a ~0.4 s hitch when a turn started. */
