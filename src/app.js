@@ -25,6 +25,7 @@ function paint(s,frame){
   /* At rest, show the full-resolution stills; the atlas only carries the motion in between. */
   const still=frame===0?s.profileStill:frame===last?s.frontStill:null;
   if(still)b.drawImage(still,0,oy,cw,gh);else b.drawImage(s.frames[frame],0,oy,cw,gh);
+  drawHangerInside(b,s,frame);
   s.button.dataset.frame=String(frame);present(s);
 }
 /* Cross-fade the two nearest frames so the turn reads as continuous motion, not steps. */
@@ -41,6 +42,7 @@ function paintBlend(s,exact){
   const w0=Math.max(0,1-exact/1.5),w1=Math.max(0,1-(last-exact)/1.5);
   if(w0>0&&s.profileStill){ctx.globalAlpha=w0;ctx.drawImage(s.profileStill,0,oy,cw,gh);}
   if(w1>0&&s.frontStill){ctx.globalAlpha=w1;ctx.drawImage(s.frontStill,0,oy,cw,gh);}
+  ctx.globalAlpha=1;drawHangerInside(ctx,s,exact);
   ctx.globalAlpha=1;s.button.dataset.frame=String(Math.round(exact));present(s);
 }
 /* How far the garment hangs below the hook, in canvas pixels (lets the hanger show above the collar). */
@@ -54,17 +56,30 @@ function hangerAngle(s,exact){
 }
 function drawHanger(ctx,s,exact){
   const h=s.manifest.hanger;if(!hanger||!h)return;
+  drawHangerShape(ctx,s,exact,1);
+}
+/* Front pass: once the garment faces the camera, the hanger shows inside the collar or hood,
+   in front of the inside of the back. Clipped to that opening and faded in with the turn. */
+function drawHangerInside(ctx,s,exact){
+  const h=s.manifest.hanger;if(!hanger||!h||!Array.isArray(h.opening)||h.opening.length<3)return;
+  const w=Math.max(0,Math.min(1,(55-hangerAngle(s,exact))/35));if(w<=0)return;
+  const f=s.canvas.width/s.manifest.width,oy=dropPx(s);
+  ctx.save();ctx.beginPath();h.opening.forEach(([x,y],i)=>{i?ctx.lineTo(x*f,y*f+oy):ctx.moveTo(x*f,y*f+oy);});ctx.closePath();ctx.clip();
+  drawHangerShape(ctx,s,exact,w);ctx.restore();
+}
+function drawHangerShape(ctx,s,exact,alpha){
+  const h=s.manifest.hanger;
   const f=s.canvas.width/s.manifest.width,{cellWidth:cw,cellHeight:ch,columns,steps,maxDegrees,apex,span}=hanger.meta;
   const k=h.span*f/span,dx=h.apex[0]*f-apex[0]*k,dy=h.apex[1]*f-apex[1]*k;
   if(Array.isArray(h.hook)&&h.apex[1]>h.hook[1]){ // steel neck from the hook down into the garment
     const x=h.hook[0]*f,r=Math.max(1.2,4.8*k),g=ctx.createLinearGradient(x-r,0,x+r,0);
     g.addColorStop(0,'#7d8287');g.addColorStop(.35,'#eef0f2');g.addColorStop(.65,'#a9aeb3');g.addColorStop(1,'#6f7479');
-    ctx.globalAlpha=1;ctx.fillStyle=g;ctx.fillRect(x-r,h.hook[1]*f-1,2*r,(h.apex[1]-h.hook[1])*f+6*f);
+    ctx.globalAlpha=alpha;ctx.fillStyle=g;ctx.fillRect(x-r,h.hook[1]*f-1,2*r,(h.apex[1]-h.hook[1])*f+6*f);
   }
   const pos=Math.max(0,Math.min(1,hangerAngle(s,exact)/maxDegrees))*(steps-1),i=Math.floor(pos),j=Math.min(steps-1,i+1),t=pos-i;
   const src=n=>[(n%columns)*cw,Math.floor(n/columns)*ch,cw,ch];
-  ctx.globalAlpha=1;ctx.drawImage(hanger.image,...src(i),dx,dy,cw*k,ch*k);
-  if(t>.02&&j!==i){ctx.globalAlpha=t;ctx.drawImage(hanger.image,...src(j),dx,dy,cw*k,ch*k);}
+  ctx.globalAlpha=alpha;ctx.drawImage(hanger.image,...src(i),dx,dy,cw*k,ch*k);
+  if(t>.02&&j!==i){ctx.globalAlpha=alpha*t;ctx.drawImage(hanger.image,...src(j),dx,dy,cw*k,ch*k);}
   ctx.globalAlpha=1;
 }
 /* Copy the composed buffer to screen with the cloth response: a small swing about the hook and a
