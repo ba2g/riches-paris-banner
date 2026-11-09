@@ -63,16 +63,17 @@
   "hanger": {
     "atlas": "fixtures/rack/hanger.webp",
     "meta": "fixtures/rack/hanger.json",
-    "apex": [
-      192.0,
-      12.1
-    ],
     "hook": [
       192.0,
       12.1
     ],
-    "span": 175.1,
-    "garmentDrop": 9.1
+    "span": 171.2,
+    "garmentDrop": 9.1,
+    "seat": [
+      192,
+      14
+    ],
+    "stem": 1.75
   },
   "turn": "back.webp"
 }
