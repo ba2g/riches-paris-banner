@@ -9,8 +9,12 @@ const rack=$('#rack'),holder=$('#rack-items');
 const banner=new URLSearchParams(location.search).has('banner');if(banner)document.documentElement.classList.add('banner');
 const mobile=matchMedia('(max-width:700px)'),reduced=matchMedia('(prefers-reduced-motion:reduce)');
 let catalog,states=[],active=-1,selected=0,pending=-1,intentTimer,ready=false,raf=0,lastTime=0,drag=null,railOffset=0,railVelocity=0,suppressClickUntil=0;
-const manifestUrl=item=>new URL('../public/'+item.motion,import.meta.url);
-const assetUrl=(item,file)=>new URL(file,manifestUrl(item));
+/* Every file is requested with the release stamp from index.html (?v=...), so a new release reaches
+   visitors at once instead of after the host's 10-minute cache. */
+const RELEASE=new URL(import.meta.url).searchParams.get('v');
+const bust=u=>{if(RELEASE)u.searchParams.set('v',RELEASE);return u;};
+const manifestUrl=item=>bust(new URL('../public/'+item.motion,import.meta.url));
+const assetUrl=(item,file)=>bust(new URL(file,manifestUrl(item)));
 function updateInfo(index){
   selected=index;const item=catalog.items[index];
   $('#selected-index').textContent=String(index+1).padStart(2,'0')+' / '+String(states.length).padStart(2,'0');
@@ -255,7 +259,7 @@ $('#previous').addEventListener('click',()=>browse(selected-1));$('#next').addEv
 $('#inspect').addEventListener('click',()=>openProduct(selected));
 function detailSide(back){
   const item=catalog.items[selected],s=states[selected];
-  $('#detail-image').src=back?new URL('../public/'+item.back,import.meta.url).href:assetUrl(item,s.manifest.front).href;
+  $('#detail-image').src=back?bust(new URL('../public/'+item.back,import.meta.url)).href:assetUrl(item,s.manifest.front).href;
   $('#detail-image').alt=item.name+' — '+(back?'dos':'face');
   $('#view-front').setAttribute('aria-pressed',String(!back));$('#view-back').setAttribute('aria-pressed',String(back));
 }
@@ -280,7 +284,7 @@ addEventListener('resize',layout);mobile.addEventListener('change',layout);reduc
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelIntent();stop();}else wake();});
 async function boot(){
   try{
-    const response=await fetch(new URL('../config/catalog.json',import.meta.url));if(!response.ok)throw new Error('Catalog not found.');
+    const response=await fetch(bust(new URL('../config/catalog.json',import.meta.url)));if(!response.ok)throw new Error('Catalog not found.');
     catalog=validateCatalog(await response.json());$('#site-title').firstChild.textContent=catalog.title||'Garment Showcase';
     for(const [i,item] of catalog.items.entries()){
       const res=await fetch(manifestUrl(item));if(!res.ok)throw new Error('Motion manifest not found: '+item.id);
@@ -302,8 +306,8 @@ async function boot(){
     const withHanger=states.find(s=>s.manifest.hanger);
     if(withHanger){
       try{
-        const h=withHanger.manifest.hanger,img=new Image();img.src=new URL('../public/'+localAsset(h.atlas),import.meta.url).href;
-        const meta=await (await fetch(new URL('../public/'+localAsset(h.meta),import.meta.url))).json();await img.decode();
+        const h=withHanger.manifest.hanger,img=new Image();img.src=bust(new URL('../public/'+localAsset(h.atlas),import.meta.url)).href;
+        const meta=await (await fetch(bust(new URL('../public/'+localAsset(h.meta),import.meta.url)))).json();await img.decode();
         if(meta&&meta.steps>1&&meta.cellWidth>0&&meta.cellHeight>0&&meta.span>0)hanger={image:resident(img),meta};
       }catch(error){console.warn('Hanger not loaded:',error.message);}
     }
