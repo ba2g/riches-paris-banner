@@ -95,8 +95,18 @@ function drawHanger(ctx,s,exact,f,oy,front){
   if(front){ctx.save();ctx.beginPath();h.opening.forEach(([x,y],i)=>{i?ctx.lineTo(x*f,y*f+oy):ctx.moveTo(x*f,y*f+oy);});ctx.closePath();ctx.clip();}
   const pos=Math.max(0,Math.min(1,angle/maxDegrees))*(steps-1),i=Math.floor(pos),j=Math.min(steps-1,i+1),t=pos-i;
   const src=n=>[(n%columns)*cw,Math.floor(n/columns)*ch,cw,ch];
-  ctx.globalAlpha=alpha;ctx.drawImage(hanger.image,...src(i),dx,dy,cw*k,ch*k);
-  if(t>.02&&j!==i){ctx.globalAlpha=alpha*t;ctx.drawImage(hanger.image,...src(j),dx,dy,cw*k,ch*k);}
+  if(front&&h.shade>0){
+    /* Inside a collar or hood the metal sits in the fabric's shade: darken it on a scratch canvas. */
+    const sc=hanger.scratch||(hanger.scratch=document.createElement('canvas')),w=Math.ceil(cw*k),hh=Math.ceil(ch*k);
+    if(sc.width<w||sc.height<hh){sc.width=Math.max(sc.width,w);sc.height=Math.max(sc.height,hh);}
+    const x=sc.getContext('2d');x.globalCompositeOperation='source-over';x.globalAlpha=1;x.clearRect(0,0,w,hh);
+    x.drawImage(hanger.image,...src(i),0,0,w,hh);if(t>.02&&j!==i){x.globalAlpha=t;x.drawImage(hanger.image,...src(j),0,0,w,hh);x.globalAlpha=1;}
+    x.globalCompositeOperation='source-atop';x.fillStyle=`rgba(${h.shadeColor||'20,20,24'},${h.shade})`;x.fillRect(0,0,w,hh);x.globalCompositeOperation='source-over';
+    ctx.globalAlpha=alpha;ctx.drawImage(sc,0,0,w,hh,dx,dy,w,hh);
+  }else{
+    ctx.globalAlpha=alpha;ctx.drawImage(hanger.image,...src(i),dx,dy,cw*k,ch*k);
+    if(t>.02&&j!==i){ctx.globalAlpha=alpha*t;ctx.drawImage(hanger.image,...src(j),dx,dy,cw*k,ch*k);}
+  }
   if(front)ctx.restore();
   ctx.globalAlpha=1;
 }
