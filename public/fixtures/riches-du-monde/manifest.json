@@ -67,7 +67,7 @@
       192.0,
       12.1
     ],
-    "span": 244.0,
+    "span": 224,
     "garmentDrop": 9.1,
     "seat": [
       192,
@@ -125,6 +125,7 @@
       ]
     ],
     "shade": 0.3,
-    "shadeColor": "22,34,52"
+    "shadeColor": "22,34,52",
+    "stretch": 1.191
   }
 }

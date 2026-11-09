@@ -85,11 +85,11 @@ function drawHanger(ctx,s,exact,f,oy,front){
   if(front&&!open)return;
   const alpha=front?facing:open?1-facing:1;if(alpha<=.001)return;
   const {cellWidth:cw,cellHeight:ch,columns,steps,maxDegrees,apex,span}=hanger.meta;
-  const k=h.span*f/span,sx=h.seat[0]*f,sy=h.seat[1]*f+oy,dx=sx-apex[0]*k,dy=sy-apex[1]*k;
+  const k=h.span*f/span,ky=k*(h.stretch||1),sx=h.seat[0]*f,sy=h.seat[1]*f+oy,dx=sx-apex[0]*k,dy=sy-apex[1]*ky;
   if(Array.isArray(h.hook)){ // steel stem from the rail hook down to the hanger
     const x=h.hook[0]*f,r=Math.max(1,(h.stem||1.75)*f*s.manifest.width/s.displayWidth),g=ctx.createLinearGradient(x-r,0,x+r,0);
     g.addColorStop(0,'#6f7479');g.addColorStop(.32,'#f1f3f5');g.addColorStop(.62,'#a7acb1');g.addColorStop(1,'#62676c');
-    ctx.globalAlpha=alpha;ctx.fillStyle=g;ctx.fillRect(x-r,h.hook[1]*f-1,2*r,sy-h.hook[1]*f+2*k);
+    ctx.globalAlpha=alpha;ctx.fillStyle=g;ctx.fillRect(x-r,h.hook[1]*f-1,2*r,sy-h.hook[1]*f+2*ky);
   }
   if(!front&&open)return; // the body sits inside the garment: from behind it would only poke out past the shoulders
   if(front){ctx.save();ctx.beginPath();h.opening.forEach(([x,y],i)=>{i?ctx.lineTo(x*f,y*f+oy):ctx.moveTo(x*f,y*f+oy);});ctx.closePath();ctx.clip();}
@@ -97,15 +97,15 @@ function drawHanger(ctx,s,exact,f,oy,front){
   const src=n=>[(n%columns)*cw,Math.floor(n/columns)*ch,cw,ch];
   if(front&&h.shade>0){
     /* Inside a collar or hood the metal sits in the fabric's shade: darken it on a scratch canvas. */
-    const sc=hanger.scratch||(hanger.scratch=document.createElement('canvas')),w=Math.ceil(cw*k),hh=Math.ceil(ch*k);
+    const sc=hanger.scratch||(hanger.scratch=document.createElement('canvas')),w=Math.ceil(cw*k),hh=Math.ceil(ch*ky);
     if(sc.width<w||sc.height<hh){sc.width=Math.max(sc.width,w);sc.height=Math.max(sc.height,hh);}
     const x=sc.getContext('2d');x.globalCompositeOperation='source-over';x.globalAlpha=1;x.clearRect(0,0,w,hh);
     x.drawImage(hanger.image,...src(i),0,0,w,hh);if(t>.02&&j!==i){x.globalAlpha=t;x.drawImage(hanger.image,...src(j),0,0,w,hh);x.globalAlpha=1;}
     x.globalCompositeOperation='source-atop';x.fillStyle=`rgba(${h.shadeColor||'20,20,24'},${h.shade})`;x.fillRect(0,0,w,hh);x.globalCompositeOperation='source-over';
     ctx.globalAlpha=alpha;ctx.drawImage(sc,0,0,w,hh,dx,dy,w,hh);
   }else{
-    ctx.globalAlpha=alpha;ctx.drawImage(hanger.image,...src(i),dx,dy,cw*k,ch*k);
-    if(t>.02&&j!==i){ctx.globalAlpha=alpha*t;ctx.drawImage(hanger.image,...src(j),dx,dy,cw*k,ch*k);}
+    ctx.globalAlpha=alpha;ctx.drawImage(hanger.image,...src(i),dx,dy,cw*k,ch*ky);
+    if(t>.02&&j!==i){ctx.globalAlpha=alpha*t;ctx.drawImage(hanger.image,...src(j),dx,dy,cw*k,ch*ky);}
   }
   if(front)ctx.restore();
   ctx.globalAlpha=1;

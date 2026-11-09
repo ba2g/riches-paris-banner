@@ -67,13 +67,14 @@
       192.0,
       12.1
     ],
-    "span": 171.2,
+    "span": 224,
     "garmentDrop": 9.1,
     "seat": [
       192,
-      14
+      16
     ],
-    "stem": 1.75
+    "stem": 1.75,
+    "stretch": 1.308
   },
   "turn": "back.webp"
 }
