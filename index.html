@@ -6,9 +6,38 @@
   <meta name="description" content="Riches Paris — la nouvelle collection en vitrine interactive. Coton tricot épais, coupe ample. From Paris for World.">
   <meta name="theme-color" content="#ffffff">
   <title>Nouveautés · Riches Paris</title>
-  <link rel="stylesheet" href="src/style.css?v=202611090929">
-  <link rel="stylesheet" href="src/brand.css?v=202611090929">
-  <script type="module" src="src/app.js?v=202611090929"></script>
+  <link rel="stylesheet" href="src/style.css?v=202611111815">
+  <link rel="stylesheet" href="src/brand.css?v=202611111815">
+  <style>
+    /* Promo video shown in the shop banner slot (see the script below). */
+    html.promo,html.promo body{margin:0;height:100%;background:#000;overflow:hidden}
+    html.promo body>*:not(#promo){display:none!important}
+    #promo{display:block;position:fixed;inset:0}
+    #promo video{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%;background:#000}
+  </style>
+  <script>
+    /* The shop embeds this page as "?banner". While a promo is set, that slot plays the promo video,
+       untouched, at its original quality. The garment rack stays available at "?banner&rack".
+       To bring the rack back to the shop, set PROMO to null. */
+    var RELEASE='202611111815';
+    var PROMO={video:'public/promo/black-friday.mp4',poster:'public/promo/black-friday.jpg',ratio:16/9,
+      href:'https://richesparis.com/collections/all',label:'Black Friday — 30% off sitewide. Shop now'};
+    (function(){
+      var q=new URLSearchParams(location.search),promo=PROMO&&q.has('banner')&&!q.has('rack');
+      if(!promo){var s=document.createElement('script');s.type='module';s.src='src/app.js?v='+RELEASE;document.head.appendChild(s);return;}
+      document.documentElement.classList.add('promo');
+      addEventListener('DOMContentLoaded',function(){
+        var a=document.createElement('a');a.id='promo';a.href=PROMO.href;a.target='_top';a.setAttribute('aria-label',PROMO.label);
+        var v=document.createElement('video');v.muted=true;v.defaultMuted=true;v.autoplay=true;v.loop=true;v.playsInline=true;
+        v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='auto';v.poster=PROMO.poster+'?v='+RELEASE;v.src=PROMO.video+'?v='+RELEASE;
+        a.appendChild(v);document.body.appendChild(a);
+        var play=function(){var p=v.play();if(p&&p.catch)p.catch(function(){});};play();
+        document.addEventListener('visibilitychange',function(){if(!document.hidden)play();});
+        /* Tell the shop page how tall the slot should be for the full 16:9 frame. */
+        if(window.parent!==window){var last=0,send=function(){var h=Math.round(innerWidth/PROMO.ratio);if(h!==last){last=h;window.parent.postMessage({type:'riches-banner-height',height:h},'*');}};send();addEventListener('resize',send);addEventListener('load',send);}
+      });
+    })();
+  </script>
 </head>
 <body>
   <a class="skip" href="#showcase">Aller aux pièces</a>
