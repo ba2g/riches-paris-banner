@@ -64,6 +64,10 @@ function bakeShadow(still){
   const u=still.width/430*k; // one CSS pixel of the displayed garment, in shadow pixels
   x.filter=`blur(${(10*u).toFixed(1)}px)`;x.globalAlpha=.2;x.drawImage(sil,pad,pad+16*u);
   x.filter=`blur(${(1.5*u).toFixed(1)}px)`;x.globalAlpha=.12;x.drawImage(sil,pad,pad+2*u);
+  /* The canvas ends at the still's bottom edge: fade the shadow out there instead of cutting it. */
+  x.filter='none';x.globalAlpha=1;x.globalCompositeOperation='destination-out';
+  const g=x.createLinearGradient(0,pad+h-22*u,0,pad+h);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,1)');
+  x.fillStyle=g;x.fillRect(0,pad+h-22*u,c.width,22*u+pad);
   return c;
 }
 function drawShadow(ctx,s,p,W,H,oy){

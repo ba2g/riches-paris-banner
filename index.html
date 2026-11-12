@@ -6,20 +6,37 @@
   <meta name="description" content="Riches Paris — la nouvelle collection en vitrine interactive. Coton tricot épais, coupe ample. From Paris for World.">
   <meta name="theme-color" content="#ffffff">
   <title>Nouveautés · Riches Paris</title>
-  <link rel="stylesheet" href="src/style.css?v=202611111815">
-  <link rel="stylesheet" href="src/brand.css?v=202611111815">
+  <link rel="stylesheet" href="src/style.css?v=202611121618">
+  <link rel="stylesheet" href="src/brand.css?v=202611121618">
   <style>
-    /* Promo video shown in the shop banner slot (see the script below). */
-    html.promo,html.promo body{margin:0;height:100%;background:#000;overflow:hidden}
+    /* Shop banner slot: a two-slide carousel, the promo video and the garment rack (see the script below). */
+    html.promo,html.promo body{margin:0;height:100%;background:#fff;overflow:hidden}
     html.promo body>*:not(#promo){display:none!important}
-    #promo{display:block;position:fixed;inset:0}
+    #promo{position:fixed;inset:0;overflow:hidden;touch-action:pan-y}
+    #promo .track{display:flex;width:200%;height:100%;transition:transform .55s cubic-bezier(.22,.61,.36,1)}
+    #promo .pane{position:relative;width:50%;height:100%;overflow:hidden}
+    #promo .pane.video{background:#000;display:block}
     #promo video{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%;background:#000}
+    #promo .pane.rack{display:flex;align-items:center;background:#fff}
+    #promo .pane.rack iframe{display:block;width:100%;height:100%;border:0}
+    #promo .nav{position:absolute;top:50%;z-index:3;width:44px;height:44px;margin-top:-22px;border:0;border-radius:50%;padding:0;cursor:pointer;
+      background:rgba(0,0,0,.42);color:#fff;display:grid;place-items:center;transition:background .2s,opacity .2s}
+    #promo .nav:hover{background:rgba(0,0,0,.7)}#promo .nav:focus-visible{outline:2px solid #fff;outline-offset:2px}
+    #promo .nav svg{width:18px;height:18px}#promo .nav.prev{left:14px}#promo .nav.next{right:14px}
+    #promo .nav[disabled]{opacity:0;pointer-events:none}
+    #promo .dots{position:absolute;left:0;right:0;bottom:10px;z-index:3;display:flex;justify-content:center;gap:8px;pointer-events:none}
+    #promo .dots button{pointer-events:auto;width:26px;height:18px;border:0;padding:0;background:none;cursor:pointer}
+    #promo .dots button::before{content:'';display:block;height:3px;border-radius:2px;background:#fff;opacity:.55;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+    #promo .dots button[aria-current=true]::before{opacity:1;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.6)}
+    #promo[data-slide="1"] .dots button::before{background:#000;box-shadow:none}
+    @media(max-width:700px){#promo .nav{width:36px;height:36px;margin-top:-18px}#promo .nav.prev{left:8px}#promo .nav.next{right:8px}}
+    @media(prefers-reduced-motion:reduce){#promo .track{transition:none}}
   </style>
   <script>
-    /* The shop embeds this page as "?banner". While a promo is set, that slot plays the promo video,
-       untouched, at its original quality. The garment rack stays available at "?banner&rack".
-       To bring the rack back to the shop, set PROMO to null. */
-    var RELEASE='202611111815';
+    /* The shop embeds this page as "?banner". While a promo is set, that slot is a carousel: slide 1 plays
+       the promo video, untouched, at its original quality; slide 2 is the garment rack ("?banner&rack",
+       loaded in a frame). To show only the rack again, set PROMO to null. */
+    var RELEASE='202611121618';
     var PROMO={video:'public/promo/black-friday.mp4',poster:'public/promo/black-friday.jpg',ratio:16/9,
       href:'https://richesparis.com/collections/all',label:'Black Friday — 30% off sitewide. Shop now'};
     (function(){
@@ -27,14 +44,47 @@
       if(!promo){var s=document.createElement('script');s.type='module';s.src='src/app.js?v='+RELEASE;document.head.appendChild(s);return;}
       document.documentElement.classList.add('promo');
       addEventListener('DOMContentLoaded',function(){
-        var a=document.createElement('a');a.id='promo';a.href=PROMO.href;a.target='_top';a.setAttribute('aria-label',PROMO.label);
-        var v=document.createElement('video');v.muted=true;v.defaultMuted=true;v.autoplay=true;v.loop=true;v.playsInline=true;
+        var el=function(t,c,p){var e=document.createElement(t);if(c)e.className=c;if(p)p.appendChild(e);return e;};
+        var root=el('div');root.id='promo';root.setAttribute('role','region');root.setAttribute('aria-roledescription','carousel');root.setAttribute('aria-label','Riches Paris');
+        var track=el('div','track',root);
+        var a=el('a','pane video',track);a.href=PROMO.href;a.target='_top';a.setAttribute('aria-label',PROMO.label);a.draggable=false;
+        var v=el('video','',a);v.muted=true;v.defaultMuted=true;v.autoplay=true;v.loop=true;v.playsInline=true;
         v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='auto';v.poster=PROMO.poster+'?v='+RELEASE;v.src=PROMO.video+'?v='+RELEASE;
-        a.appendChild(v);document.body.appendChild(a);
-        var play=function(){var p=v.play();if(p&&p.catch)p.catch(function(){});};play();
-        document.addEventListener('visibilitychange',function(){if(!document.hidden)play();});
-        /* Tell the shop page how tall the slot should be for the full 16:9 frame. */
-        if(window.parent!==window){var last=0,send=function(){var h=Math.round(innerWidth/PROMO.ratio);if(h!==last){last=h;window.parent.postMessage({type:'riches-banner-height',height:h},'*');}};send();addEventListener('resize',send);addEventListener('load',send);}
+        var rack=el('div','pane rack',track),frame=el('iframe','',rack);frame.title='Riches Paris — la collection';frame.setAttribute('scrolling','no');
+        var chev=function(d){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+d+'"/></svg>';};
+        var prev=el('button','nav prev',root),next=el('button','nav next',root);prev.type=next.type='button';
+        prev.innerHTML=chev('M15 5l-7 7 7 7');next.innerHTML=chev('M9 5l7 7-7 7');prev.setAttribute('aria-label','Black Friday');next.setAttribute('aria-label','La collection');
+        var dots=el('div','dots',root),d0=el('button','',dots),d1=el('button','',dots);d0.type=d1.type='button';d0.setAttribute('aria-label','Black Friday');d1.setAttribute('aria-label','La collection');
+        document.body.appendChild(root);
+        var slide=0,rackHeight=0,last=0,framed=window.parent!==window;
+        var play=function(){var p=v.play();if(p&&p.catch)p.catch(function(){});};
+        /* Tell the shop page how tall the slot should be: the full 16:9 frame for the video, and for the
+           rack whatever it needs (never shorter than the video, so wide screens do not jump). */
+        var size=function(){
+          var vh=Math.round(innerWidth/PROMO.ratio),h=slide===1&&rackHeight?Math.max(vh,rackHeight):vh;
+          if(rackHeight)frame.style.height=Math.min(rackHeight,Math.max(h,innerHeight))+'px';
+          if(framed&&h!==last){last=h;window.parent.postMessage({type:'riches-banner-height',height:h},'*');}
+        };
+        var go=function(n){
+          slide=Math.max(0,Math.min(1,n));root.dataset.slide=String(slide);track.style.transform='translateX('+(-50*slide)+'%)';
+          prev.disabled=slide===0;next.disabled=slide===1;d0.setAttribute('aria-current',String(slide===0));d1.setAttribute('aria-current',String(slide===1));
+          a.tabIndex=slide===0?0:-1;frame.tabIndex=slide===1?0:-1;
+          if(slide===1){if(!frame.src)frame.src='?banner&rack&v='+RELEASE;v.pause();}else play();
+          size();
+        };
+        prev.onclick=function(){go(0);};next.onclick=function(){go(1);};d0.onclick=function(){go(0);};d1.onclick=function(){go(1);};
+        addEventListener('message',function(e){if(e.source===frame.contentWindow&&e.data&&e.data.type==='riches-banner-height'&&e.data.height>0){rackHeight=Math.ceil(e.data.height);size();}});
+        /* Swipe left on the video to reach the rack. The rack keeps its own swipe for the garments, so from
+           there the arrows and dots lead back. A swipe never counts as a click on the video link. */
+        var x0=null,y0=0,swiped=false;
+        a.addEventListener('pointerdown',function(e){x0=e.clientX;y0=e.clientY;swiped=false;});
+        a.addEventListener('pointermove',function(e){if(x0===null)return;var dx=e.clientX-x0,dy=e.clientY-y0;if(dx<-45&&Math.abs(dx)>1.4*Math.abs(dy)){swiped=true;x0=null;go(1);}});
+        addEventListener('pointerup',function(){x0=null;});addEventListener('pointercancel',function(){x0=null;});
+        a.addEventListener('click',function(e){if(swiped){e.preventDefault();swiped=false;}});
+        root.addEventListener('keydown',function(e){if(e.key==='ArrowRight')go(1);else if(e.key==='ArrowLeft')go(0);});
+        document.addEventListener('visibilitychange',function(){if(!document.hidden&&slide===0)play();});
+        addEventListener('resize',size);addEventListener('load',function(){size();if(!frame.src)setTimeout(function(){if(!frame.src)frame.src='?banner&rack&v='+RELEASE;},1200);});
+        go(0);
       });
     })();
   </script>

@@ -51,7 +51,8 @@
    "color": "Noir",
    "description": "Hoodie zippé coupe ample. Brodé « Private Club » et croix devant, grand « Riches Paris » et croix argentée au dos, monogramme RC sur les manches.",
    "motion": "fixtures/private-club/manifest.json",
-   "back": "fixtures/private-club/back.webp"
+   "back": "fixtures/private-club/back.webp",
+   "productUrl": "https://richesparis.com/products/set-riches-paris-private-club"
   },
   {
    "id": "maison-d-art",
